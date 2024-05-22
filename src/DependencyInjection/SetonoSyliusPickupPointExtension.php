@@ -90,5 +90,9 @@ final class SetonoSyliusPickupPointExtension extends AbstractResourceExtension
 
             $loader->load('services/providers/post_nord.xml');
         }
+
+        if ($config['providers']['chronopost']) {
+            $loader->load('services/providers/chronopost.xml');
+        }
     }
 }

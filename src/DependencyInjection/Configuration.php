@@ -72,6 +72,11 @@ final class Configuration implements ConfigurationInterface
                         ->booleanNode('post_nord')
                             ->info('Whether to enable the PostNord provider')
                             ->defaultValue(class_exists(SetonoPostNordBundle::class))
+                        ->end()
+                        ->booleanNode('chronopost')
+                            ->info('Whether to enable the Chronopost provider')
+                            ->defaultValue(false)
+                        ->end()
             ;
 
         $this->addResourcesSection($rootNode);
