@@ -75,7 +75,7 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                         ->booleanNode('chronopost')
                             ->info('Whether to enable the Chronopost provider')
-                            ->defaultValue(false)
+                            ->defaultValue(true)
                         ->end()
             ;
 
