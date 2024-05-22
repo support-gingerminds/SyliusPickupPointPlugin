@@ -50,9 +50,13 @@ final class ChronopostProvider extends Provider
             'date' => date('d/m/Y')
         ]);
 
-        //$resp = json_decode(json_encode($response), true);
+        $pickupPoints = [];
+        foreach ($response as $item) {
+            $pickupPoints[] = $this->transform($item);
+        }
 
-        return $response->return;
+        return $pickupPoints;
+
     }
 
     public function findPickupPoint(PickupPointCode $code): ?PickupPointInterface
@@ -63,5 +67,24 @@ final class ChronopostProvider extends Provider
     public function findAllPickupPoints(): iterable
     {
         return [];
+    }
+
+    private function transform(ParcelShop $parcelShop): PickupPointInterface
+    {
+        /** @var PickupPointInterface|object $pickupPoint */
+        $pickupPoint = $this->pickupPointFactory->createNew();
+
+        Assert::isInstanceOf($pickupPoint, PickupPointInterface::class);
+
+        $pickupPoint->setCode(new PickupPointCode($parcelShop->getNumber(), $this->getCode(), $parcelShop->getCountryCode()));
+        $pickupPoint->setName($parcelShop->getCompanyName());
+        $pickupPoint->setAddress($parcelShop->getStreetName());
+        $pickupPoint->setZipCode($parcelShop->getZipCode());
+        $pickupPoint->setCity($parcelShop->getCity());
+        $pickupPoint->setCountry($parcelShop->getCountryCode());
+        $pickupPoint->setLatitude((float) $parcelShop->getLatitude());
+        $pickupPoint->setLongitude((float) $parcelShop->getLongitude());
+
+        return $pickupPoint;
     }
 }
