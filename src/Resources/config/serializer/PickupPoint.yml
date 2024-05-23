@@ -20,3 +20,7 @@ Setono\SyliusPickupPointPlugin\Model\PickupPoint:
             serialized_name: full_address
             type: string
             groups: [Detailed, Autocomplete]
+        getOpeningHours:
+            serialized_name: opening_hours
+            type: array
+            groups: [ Detailed, Autocomplete ]

@@ -27,6 +27,8 @@ class PickupPoint implements PickupPointInterface
 
     protected ?float $longitude = null;
 
+    protected ?array $openingHours = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -124,5 +126,15 @@ class PickupPoint implements PickupPointInterface
             $this->getZipCode(),
             $this->getCity()
         );
+    }
+
+    public function setOpeningHours(?array $openingHours): void
+    {
+        $this->openingHours = $openingHours;
+    }
+
+    public function getOpeningHours(): ?array
+    {
+        return $this->openingHours;
     }
 }

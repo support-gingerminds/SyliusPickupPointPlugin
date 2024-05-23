@@ -50,4 +50,9 @@ interface PickupPointInterface extends ResourceInterface
     public function setLongitude(?float $longitude): void;
 
     public function getFullAddress(): string;
+
+    /**
+     * @param OpeningHours[] $openingHours
+     */
+    public function setOpeningHours(?array $openingHours): void;
 }
