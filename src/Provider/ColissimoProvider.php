@@ -17,7 +17,7 @@ final class ColissimoProvider extends Provider
 {
     public function __construct(
         private FactoryInterface   $pickupPointFactory,
-        private HttpCLienInterface $client,
+        private HttpClientInterface $client,
         private string $colissimoAccount,
         private string $colissimoPassword
     )
