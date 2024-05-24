@@ -45,25 +45,28 @@ final class ColissimoProvider extends Provider
         try {
             $date = new \DateTime();
 
-            $response = $this->client->request('POST', 'https://ws.colissimo.fr/pointretrait-ws-cxf/rest/v2/pointretrait/findRDVPointRetraitAcheminement', [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
-                'body' => [
-                    "accountNumber" => $this->colissimoAccount,
-                    "password" => $this->colissimoPassword,
-                    "address" => $address->getStreet(),
-                    "zipCode" => $address->getPostcode(),
-                    "city" => $address->getCity(),
-                    "codTiersPourPartenaire" => $this->colissimoAccount,
-                    "countryCode" => $address->getCountryCode(),
-                    "weight" => sprintf('%05d', $order->getTotalWeight()),
-                    "shippingDate" => $date->format('d/m/Y'),
-                    "filterRelay" => 1
-                ]
+            $client = new \SoapClient('https://ws.colissimo.fr/pointretrait-ws-cxf/PointRetraitServiceWS/2.0?wsdl', [
+                'wsdl_cache' => 0,
+                'trace' => 1,
+                'exceptions' => true,
+                'soap_version' => SOAP_1_1,
+                'encoding' => 'utf-8'
             ]);
 
-            $cpPoints = json_decode($response->getContent()['listePointRetraitAcheminement'], true);
+            $cpPoints = $client->findRDVPointRetraitAcheminement([
+                "accountNumber" => $this->colissimoAccount,
+                "password" => $this->colissimoPassword,
+                "address" => $address->getStreet(),
+                "zipCode" => $address->getPostcode(),
+                "city" => $address->getCity(),
+                "codTiersPourPartenaire" => $this->colissimoAccount,
+                "countryCode" => $address->getCountryCode(),
+                "weight" => sprintf('%05d', $order->getTotalWeight()),
+                "shippingDate" => $date->format('d/m/Y'),
+                "filterRelay" => 1
+            ]);
+
+            dd($cpPoints);
 
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
