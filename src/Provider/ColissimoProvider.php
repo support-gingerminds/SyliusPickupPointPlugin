@@ -66,42 +66,42 @@ final class ColissimoProvider extends Provider
                 "filterRelay" => 1
             ]);
 
-            dd($cpPoints);
+            dd($cpPoints->listePointRetraitAcheminement);
 
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
         }
 
         $pickupPoints = [];
-        foreach ($cpPoints as $item) {
+        foreach ($cpPoints->return as $item) {
 
             $openingHours = [
-                'lundi' => $item['horairesOuvertureLundi'],
-                'mardi' => $item['horairesOuvertureMardi'],
-                'mercredi' => $item['horairesOuvertureMercredi'],
-                'jeudi' => $item['horairesOuvertureJeudi'],
-                'vendredi' => $item['horairesOuvertureVendredi'],
-                'samedi' => $item['horairesOuvertureSamedi'],
-                'dimanche' => $item['horairesOuvertureDimanche'],
+                'lundi' => $item->horairesOuvertureLundi,
+                'mardi' => $item->horairesOuvertureMardi,
+                'mercredi' => $item->horairesOuvertureMercredi,
+                'jeudi' => $item->horairesOuvertureJeudi,
+                'vendredi' => $item->horairesOuvertureVendredi,
+                'samedi' => $item->horairesOuvertureSamedi,
+                'dimanche' => $item->horairesOuvertureDimanche,
             ];
 
             $cpPoint = new CpPoint(
-                $item['adresse1'],
-                $item['codePostal'],
+                $item->adresse1,
+                $item->codePostal,
                 $date->format('d/m/Y'),
-                $item['horairesOuvertureLundi'],
-                $item['horairesOuvertureMardi'],
-                $item['horairesOuvertureMercredi'],
-                $item['horairesOuvertureJeudi'],
-                $item['horairesOuvertureVendredi'],
-                $item['horairesOuvertureSamedi'],
-                $item['horairesOuvertureDimanche'],
-                $item['identifiant'],
-                $item['localite'],
-                $item['nom'],
-                $item['coordGeolocalisationLatitude'],
-                $item['coordGeolocalisationLongitude'],
-                'https://www.google.com/maps?&z=16&q=' . $item['coordGeolocalisationLatitude'] . ',' . $item['coordGeolocalisationLongitude'],
+                $item->horairesOuvertureLundi,
+                $item->horairesOuvertureMardi,
+                $item->horairesOuvertureMercredi,
+                $item->horairesOuvertureJeudi,
+                $item->horairesOuvertureVendredi,
+                $item->horairesOuvertureSamedi,
+                $item->horairesOuvertureDimanche,
+                $item->identifiantChronopostPointA2PAS,
+                $item->localite,
+                $item->nom,
+                $item->coordGeolocalisationLatitude,
+                $item->coordGeolocalisationLongitude,
+                'https://www.google.com/maps?&z=16&q=' . $item->coordGeolocalisationLatitude . ',' . $item->coordGeolocalisationLongitude,
                 $openingHours
             );
 
