@@ -94,7 +94,7 @@ final class ColissimoProvider extends Provider
                 $item->horairesOuvertureVendredi,
                 $item->horairesOuvertureSamedi,
                 $item->horairesOuvertureDimanche,
-                $item->identifiantChronopostPointA2PAS,
+                $item->identifiant,
                 $item->localite,
                 $item->nom,
                 $item->coordGeolocalisationLatitude,
