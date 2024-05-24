@@ -66,14 +66,12 @@ final class ColissimoProvider extends Provider
                 "filterRelay" => 1
             ]);
 
-            dd($cpPoints->return->listePointRetraitAcheminement);
-
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
         }
 
         $pickupPoints = [];
-        foreach ($cpPoints->return as $item) {
+        foreach ($cpPoints->return->listePointRetraitAcheminement as $item) {
 
             $openingHours = [
                 'lundi' => $item->horairesOuvertureLundi,
