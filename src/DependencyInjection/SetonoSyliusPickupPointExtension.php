@@ -94,5 +94,9 @@ final class SetonoSyliusPickupPointExtension extends AbstractResourceExtension
         if ($config['providers']['chronopost']) {
             $loader->load('services/providers/chronopost.xml');
         }
+
+        if ($config['providers']['colissimo']) {
+            $loader->load('services/providers/colissimo.xml');
+        }
     }
 }

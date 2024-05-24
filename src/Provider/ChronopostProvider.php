@@ -14,12 +14,9 @@ use Webmozart\Assert\Assert;
 
 final class ChronopostProvider extends Provider
 {
-
-    private FactoryInterface $pickupPointFactory;
-
-    public function __construct(FactoryInterface $pickupPointFactory)
-    {
-        $this->pickupPointFactory = $pickupPointFactory;
+    public function __construct(
+        private FactoryInterface $pickupPointFactory
+    ) {
     }
 
     public function getCode(): string

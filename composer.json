@@ -8,7 +8,7 @@
         "sylius-plugin"
     ],
     "require": {
-        "php": ">=7.4",
+        "php": "^8.0",
         "ext-mbstring": "*",
         "behat/transliterator": "^1.5",
         "doctrine/event-manager": "^1.2",

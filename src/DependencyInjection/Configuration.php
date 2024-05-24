@@ -77,6 +77,10 @@ final class Configuration implements ConfigurationInterface
                             ->info('Whether to enable the Chronopost provider')
                             ->defaultValue(true)
                         ->end()
+                        ->booleanNode('colissimo')
+                            ->info('Whether to enable the Colissimo provider')
+                            ->defaultValue(true)
+                        ->end()
             ;
 
         $this->addResourcesSection($rootNode);
