@@ -11,7 +11,7 @@
         <service id="setono_sylius_pickup_point.provider.colissimo"
                  class="Setono\SyliusPickupPointPlugin\Provider\ColissimoProvider">
             <argument type="service" id="setono_sylius_pickup_point.factory.pickup_point"/>
-            <argument type="service" id="@http_client"/>
+            <argument type="service" id="http_client"/>
             <tag name="setono_sylius_pickup_point.provider" code="colissimo"
                  label="setono_sylius_pickup_point.provider.colissimo"/>
         </service>
