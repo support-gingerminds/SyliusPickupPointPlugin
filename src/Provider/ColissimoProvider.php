@@ -60,7 +60,7 @@ final class ColissimoProvider extends Provider
                 ]
             ]);
 
-            dd($response);
+            dd($response->getContent());
 
             $cpPoints = json_decode($response->getContent()['listePointRetraitAcheminement'], true);
 
