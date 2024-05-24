@@ -46,6 +46,9 @@ final class ColissimoProvider extends Provider
             $date = new \DateTime();
 
             $response = $this->client->request('POST', 'https://ws.colissimo.fr/pointretrait-ws-cxf/rest/v2/pointretrait/findRDVPointRetraitAcheminement', [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
                 'body' => [
                     "accountNumber" => $this->colissimoAccount,
                     "password" => $this->colissimoPassword,
