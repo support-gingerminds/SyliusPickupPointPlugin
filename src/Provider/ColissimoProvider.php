@@ -53,6 +53,19 @@ final class ColissimoProvider extends Provider
                 'encoding' => 'utf-8'
             ]);
 
+            dd($client->findRDVPointRetraitAcheminement([
+                "accountNumber" => $this->colissimoAccount,
+                "password" => $this->colissimoPassword,
+                "address" => $address->getStreet(),
+                "zipCode" => $address->getPostcode(),
+                "city" => $address->getCity(),
+                "codTiersPourPartenaire" => $this->colissimoAccount,
+                "countryCode" => $address->getCountryCode(),
+                "weight" => sprintf('%05d', $order->getTotalWeight()),
+                "shippingDate" => $date->format('d/m/Y'),
+                "filterRelay" => 1
+            ]));
+
             $cpPoints = $client->findRDVPointRetraitAcheminement([
                 "accountNumber" => $this->colissimoAccount,
                 "password" => $this->colissimoPassword,
