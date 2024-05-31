@@ -53,6 +53,8 @@ final class ColissimoProvider extends Provider
                 'encoding' => 'utf-8'
             ]);
 
+            dd($client);
+
             $cpPoints = $client->findRDVPointRetraitAcheminement([
                 "accountNumber" => $this->colissimoAccount,
                 "password" => $this->colissimoPassword,
