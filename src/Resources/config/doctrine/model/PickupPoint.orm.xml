@@ -15,7 +15,7 @@
         <field name="country" column="country" type="string"/>
         <field name="latitude" nullable="true" type="decimal" precision="10" scale="8"/>
         <field name="longitude" nullable="true" type="decimal" precision="11" scale="8"/>
-        <one-to-many field="shipments" target-entity="Sylius\Component\Shipment\Model\ShipmentInterface" mapped-by="pickupPoint">
+        <one-to-many field="shipments" target-entity="Sylius\Component\Shipping\Model\ShipmentInterface" mapped-by="pickupPoint">
             <order-by>
                 <order-by-field name="id" />
             </order-by>
