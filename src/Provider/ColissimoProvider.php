@@ -128,7 +128,7 @@ final class ColissimoProvider extends Provider
             $cpPoint = $client->findPointRetraitAcheminementByID([
                 "accountNumber" => $this->colissimoAccount,
                 "password" => $this->colissimoPassword,
-                "id" => $code,
+                "id" => $code->getIdPart(),
                 "weight" => 1,
                 "date" => $date->format('d/m/Y'),
                 "filterRelay" => 1
