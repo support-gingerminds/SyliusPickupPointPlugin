@@ -6,9 +6,9 @@ namespace Setono\SyliusPickupPointPlugin\Model;
 
 interface PickupPointAwareInterface
 {
-    public function hasPickupPointId(): bool;
+    public function hasPickupPointIdentifier(): bool;
 
-    public function setPickupPointId(?string $pickupPoint): void;
+    public function setPickupPointIdentifier(?string $pickupPointIdentifier): void;
 
-    public function getPickupPointId(): ?string;
+    public function getPickupPointIdentifier(): ?string;
 }
