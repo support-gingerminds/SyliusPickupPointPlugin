@@ -85,7 +85,8 @@ final class ChronopostProvider extends Provider
                 $item->coordGeoLatitude,
                 $item->coordGeoLongitude,
                 $item->urlGoogleMaps,
-                $openingHours
+                $openingHours,
+                ''
             );
 
             $pickupPoints[] = $this->transform($cpPoint);

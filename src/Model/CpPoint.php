@@ -25,6 +25,8 @@ final class CpPoint
     private float $coordGeoLongitude;
     private string $urlGoogleMaps;
 
+    private string $distance;
+
     // Values to find later
     /*private int $distanceEnMetre;
     private string $typeDePoint;*/
@@ -48,7 +50,8 @@ final class CpPoint
         float $coordGeoLatitude,
         float $coordGeoLongitude,
         string $urlGoogleMaps,
-        array $openingHours = []
+        array $openingHours = [],
+        string $distance
     ) {
         $this->adresse1 = $adresse1;
         $this->codePostal = $codePostal;
@@ -67,6 +70,7 @@ final class CpPoint
         $this->coordGeoLongitude = $coordGeoLongitude;
         $this->urlGoogleMaps = $urlGoogleMaps;
         $this->openingHours = $openingHours;
+        $this->distance = $distance;
     }
 
     public static function createFromStdClass(stdClass $stdClass): self
@@ -98,7 +102,8 @@ final class CpPoint
             $stdClass->coordGeoLatitude,
             $stdClass->coordGeoLongitude,
             $stdClass->urlGoogleMaps,
-            $openingHours
+            $openingHours,
+            $stdClass->distanceEnMetre
         );
     }
 
@@ -150,5 +155,10 @@ final class CpPoint
     public function getOpeningHours(): array
     {
         return $this->openingHours;
+    }
+
+    public function getDistance(): string
+    {
+        return $this->distance;
     }
 }

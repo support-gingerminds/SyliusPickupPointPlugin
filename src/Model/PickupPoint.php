@@ -29,6 +29,8 @@ class PickupPoint implements PickupPointInterface
 
     protected ?array $openingHours = null;
 
+    protected ?string $distance = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -136,5 +138,21 @@ class PickupPoint implements PickupPointInterface
     public function getOpeningHours(): ?array
     {
         return $this->openingHours;
+    }
+
+    /**
+     * @param string|null $distance
+     */
+    public function setDistance(?string $distance): void
+    {
+        $this->distance = $distance;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDistance(): ?string
+    {
+        return $this->distance;
     }
 }
