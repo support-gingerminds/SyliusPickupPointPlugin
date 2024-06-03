@@ -29,7 +29,7 @@ class PickupPoint implements PickupPointInterface
 
     protected ?array $openingHours = null;
 
-    protected ?string $distance = null;
+    protected ?int $distance = null;
 
     public function getId(): ?int
     {
@@ -141,17 +141,17 @@ class PickupPoint implements PickupPointInterface
     }
 
     /**
-     * @param string|null $distance
+     * @param int|null $distance
      */
-    public function setDistance(?string $distance): void
+    public function setDistance(?int $distance): void
     {
         $this->distance = $distance;
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getDistance(): ?string
+    public function getDistance(): ?int
     {
         return $this->distance;
     }

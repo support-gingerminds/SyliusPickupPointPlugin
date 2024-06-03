@@ -51,7 +51,7 @@ final class CpPoint
         float $coordGeoLongitude,
         string $urlGoogleMaps,
         array $openingHours = [],
-        string $distance
+        int $distance
     ) {
         $this->adresse1 = $adresse1;
         $this->codePostal = $codePostal;
@@ -157,7 +157,7 @@ final class CpPoint
         return $this->openingHours;
     }
 
-    public function getDistance(): string
+    public function getDistance(): int
     {
         return $this->distance;
     }
