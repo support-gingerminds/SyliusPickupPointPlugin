@@ -50,7 +50,7 @@ final class CpPoint
         float $coordGeoLatitude,
         float $coordGeoLongitude,
         string $urlGoogleMaps,
-        array $openingHours = [],
+        array $openingHours,
         int $distance
     ) {
         $this->adresse1 = $adresse1;
