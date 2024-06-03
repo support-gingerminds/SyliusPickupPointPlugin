@@ -125,7 +125,7 @@ final class ColissimoProvider extends Provider
                 'encoding' => 'utf-8'
             ]);
 
-            $cpPoint = $client->findPointRetraitAcheminementByID([
+            $cpPointResponse = $client->findPointRetraitAcheminementByID([
                 "accountNumber" => $this->colissimoAccount,
                 "password" => $this->colissimoPassword,
                 "id" => $code->getIdPart(),
@@ -138,46 +138,39 @@ final class ColissimoProvider extends Provider
             throw new TimeoutException($e);
         }
 
-        dd($cpPoint);
+        $item = $cpPointResponse->return->pointRetraitAcheminement;
 
-        $pickupPoints = [];
-//        foreach ($cpPoints->return->listePointRetraitAcheminement as $item) {
-//
-//            $openingHours = [
-//                'lundi' => $item->horairesOuvertureLundi,
-//                'mardi' => $item->horairesOuvertureMardi,
-//                'mercredi' => $item->horairesOuvertureMercredi,
-//                'jeudi' => $item->horairesOuvertureJeudi,
-//                'vendredi' => $item->horairesOuvertureVendredi,
-//                'samedi' => $item->horairesOuvertureSamedi,
-//                'dimanche' => $item->horairesOuvertureDimanche,
-//            ];
-//
-//            $cpPoint = new CpPoint(
-//                $item->adresse1,
-//                $item->codePostal,
-//                $date->format('d/m/Y'),
-//                $item->horairesOuvertureLundi,
-//                $item->horairesOuvertureMardi,
-//                $item->horairesOuvertureMercredi,
-//                $item->horairesOuvertureJeudi,
-//                $item->horairesOuvertureVendredi,
-//                $item->horairesOuvertureSamedi,
-//                $item->horairesOuvertureDimanche,
-//                $item->identifiant,
-//                $item->localite,
-//                $item->nom,
-//                floatval($item->coordGeolocalisationLatitude),
-//                floatval($item->coordGeolocalisationLongitude),
-//                'https://www.google.com/maps?&z=16&q=' . $item->coordGeolocalisationLatitude . ',' . $item->coordGeolocalisationLongitude,
-//                $openingHours
-//            );
-//
-//            $pickupPoints[] = $this->transform($cpPoint);
-//        }
+        $openingHours = [
+            'lundi' => $item->horairesOuvertureLundi,
+            'mardi' => $item->horairesOuvertureMardi,
+            'mercredi' => $item->horairesOuvertureMercredi,
+            'jeudi' => $item->horairesOuvertureJeudi,
+            'vendredi' => $item->horairesOuvertureVendredi,
+            'samedi' => $item->horairesOuvertureSamedi,
+            'dimanche' => $item->horairesOuvertureDimanche,
+        ];
 
+        $cpPoint = new CpPoint(
+            $item->adresse1,
+            $item->codePostal,
+            $date->format('d/m/Y'),
+            $item->horairesOuvertureLundi,
+            $item->horairesOuvertureMardi,
+            $item->horairesOuvertureMercredi,
+            $item->horairesOuvertureJeudi,
+            $item->horairesOuvertureVendredi,
+            $item->horairesOuvertureSamedi,
+            $item->horairesOuvertureDimanche,
+            $item->identifiant,
+            $item->localite,
+            $item->nom,
+            floatval($item->coordGeolocalisationLatitude),
+            floatval($item->coordGeolocalisationLongitude),
+            'https://www.google.com/maps?&z=16&q=' . $item->coordGeolocalisationLatitude . ',' . $item->coordGeolocalisationLongitude,
+            $openingHours
+        );
 
-        return new PickupPoint();
+        return $this->transform($cpPoint);
     }
 
     public function findAllPickupPoints(): iterable
