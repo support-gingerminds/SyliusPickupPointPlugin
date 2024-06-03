@@ -73,6 +73,11 @@ final class PickupPointCode
         return $this->id;
     }
 
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
     public function getProviderPart(): string
     {
         return $this->provider;
