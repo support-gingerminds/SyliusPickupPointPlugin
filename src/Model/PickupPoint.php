@@ -6,6 +6,7 @@ namespace Setono\SyliusPickupPointPlugin\Model;
 
 use function sprintf;
 use Webmozart\Assert\Assert;
+use Doctrine\Common\Collections\Collection;
 
 class PickupPoint implements PickupPointInterface
 {
@@ -30,6 +31,8 @@ class PickupPoint implements PickupPointInterface
     protected ?array $openingHours = null;
 
     protected ?int $distance = null;
+
+    protected Collection $shipments;
 
     public function getId(): ?int
     {
@@ -155,4 +158,6 @@ class PickupPoint implements PickupPointInterface
     {
         return $this->distance;
     }
+
+
 }

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait PickupPointAwareTrait
 {
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'shipments', cascade: ['persist', 'remove'])]
     private ?PickupPoint $pickupPoint = null;
 
     /** @ORM\Column(name="pickup_point_id", type="string", nullable=true) */
