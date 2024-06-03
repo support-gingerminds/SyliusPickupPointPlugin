@@ -101,7 +101,8 @@ final class ColissimoProvider extends Provider
                 floatval($item->coordGeolocalisationLatitude),
                 floatval($item->coordGeolocalisationLongitude),
                 'https://www.google.com/maps?&z=16&q=' . $item->coordGeolocalisationLatitude . ',' . $item->coordGeolocalisationLongitude,
-                $openingHours
+                $openingHours,
+                $item->distanceEnMetre
             );
 
             $pickupPoints[] = $this->transform($cpPoint);
