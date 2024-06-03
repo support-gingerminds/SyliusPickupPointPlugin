@@ -6,6 +6,7 @@ namespace Setono\SyliusPickupPointPlugin\Provider;
 
 use Setono\SyliusPickupPointPlugin\Client\Chronopost\ClientInterface;
 use Setono\SyliusPickupPointPlugin\Model\CpPoint;
+use Setono\SyliusPickupPointPlugin\Model\PickupPoint;
 use Setono\SyliusPickupPointPlugin\Model\PickupPointCode;
 use Setono\SyliusPickupPointPlugin\Model\PickupPointInterface;
 use Sylius\Component\Core\Model\OrderInterface;
@@ -113,7 +114,70 @@ final class ColissimoProvider extends Provider
 
     public function findPickupPoint(PickupPointCode $code): ?PickupPointInterface
     {
-        return null;
+        try {
+            $date = new \DateTime();
+
+            $client = new \SoapClient('https://ws.colissimo.fr/pointretrait-ws-cxf/PointRetraitServiceWS/2.0?wsdl', [
+                'wsdl_cache' => 0,
+                'trace' => 1,
+                'exceptions' => true,
+                'soap_version' => SOAP_1_1,
+                'encoding' => 'utf-8'
+            ]);
+
+            $cpPoint = $client->findPointRetraitAcheminementByID([
+                "accountNumber" => $this->colissimoAccount,
+                "password" => $this->colissimoPassword,
+                "id" => $code,
+                "weight" => 1,
+                "date" => $date->format('d/m/Y'),
+                "filterRelay" => 1
+            ]);
+
+        } catch (ConnectionException $e) {
+            throw new TimeoutException($e);
+        }
+
+        dd($cpPoint);
+
+        $pickupPoints = [];
+//        foreach ($cpPoints->return->listePointRetraitAcheminement as $item) {
+//
+//            $openingHours = [
+//                'lundi' => $item->horairesOuvertureLundi,
+//                'mardi' => $item->horairesOuvertureMardi,
+//                'mercredi' => $item->horairesOuvertureMercredi,
+//                'jeudi' => $item->horairesOuvertureJeudi,
+//                'vendredi' => $item->horairesOuvertureVendredi,
+//                'samedi' => $item->horairesOuvertureSamedi,
+//                'dimanche' => $item->horairesOuvertureDimanche,
+//            ];
+//
+//            $cpPoint = new CpPoint(
+//                $item->adresse1,
+//                $item->codePostal,
+//                $date->format('d/m/Y'),
+//                $item->horairesOuvertureLundi,
+//                $item->horairesOuvertureMardi,
+//                $item->horairesOuvertureMercredi,
+//                $item->horairesOuvertureJeudi,
+//                $item->horairesOuvertureVendredi,
+//                $item->horairesOuvertureSamedi,
+//                $item->horairesOuvertureDimanche,
+//                $item->identifiant,
+//                $item->localite,
+//                $item->nom,
+//                floatval($item->coordGeolocalisationLatitude),
+//                floatval($item->coordGeolocalisationLongitude),
+//                'https://www.google.com/maps?&z=16&q=' . $item->coordGeolocalisationLatitude . ',' . $item->coordGeolocalisationLongitude,
+//                $openingHours
+//            );
+//
+//            $pickupPoints[] = $this->transform($cpPoint);
+//        }
+
+
+        return new PickupPoint();
     }
 
     public function findAllPickupPoints(): iterable
