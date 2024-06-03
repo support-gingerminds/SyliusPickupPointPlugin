@@ -13,7 +13,7 @@ trait PickupPointAwareTrait
 
     /** @ORM\Column(name="pickup_point_id", type="string", nullable=true) */
     #[ORM\Column(name:"pickup_point_identifier", type: 'string', nullable: true)]
-    protected ?string $pickupPointId = null;
+    protected ?string $pickupPointIdentifier = null;
 
     /** @ORM\Column(name="pickup_point_code", type="string", nullable=true) */
     #[ORM\Column(name:"pickup_point_code", type: 'string', nullable: true)]
@@ -31,19 +31,19 @@ trait PickupPointAwareTrait
         return $this;
     }
 
-    public function hasPickupPointId(): bool
+    public function hasPickupPointIdentifier(): bool
     {
-        return null !== $this->pickupPointId;
+        return null !== $this->pickupPointIdentifier;
     }
 
-    public function setPickupPointId(?string $pickupPointId): void
+    public function setPickupPointIdentifier(?string $pickupPointIdentifier): void
     {
-        $this->pickupPointId = $pickupPointId;
+        $this->pickupPointIdentifier = $pickupPointIdentifier;
     }
 
-    public function getPickupPointId(): ?string
+    public function getPickupPointIdentifier(): ?string
     {
-        return $this->pickupPointId;
+        return $this->pickupPointIdentifier;
     }
 
     public function setPickupPointCode(?string $pickupPointCode): void

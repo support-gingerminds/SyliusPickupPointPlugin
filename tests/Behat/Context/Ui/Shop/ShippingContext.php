@@ -58,7 +58,7 @@ final class ShippingContext implements Context
         /** @var PickupPointAwareInterface $shipment */
         $shipment = $order->getShipments()->first();
 
-        Assert::notNull($shipment->getPickupPointId());
+        Assert::notNull($shipment->getPickupPointIdentifier());
     }
 
     /**
