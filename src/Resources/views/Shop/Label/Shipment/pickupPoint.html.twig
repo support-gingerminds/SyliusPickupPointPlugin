@@ -1,10 +1,13 @@
-{% set pickupPointId = shipment.pickupPointIdentifier %}
+{% if null !== shipment.pickupPoint %}
+{#    <label class="setono-sylius-pickup-point-label"#}
+{#           data-pickup-point-id="{{ pickupPointId }}"#}
+{#           data-url="{{ path('setono_sylius_pickup_point_shop_ajax_pickup_point_by_id', { 'pickupPointId': pickupPointId }) }}"#}
+{#           style="display: none;">#}
+{#        {{ 'setono_sylius_pickup_point.ui.shipment_to'|trans }}#}
+{#    </label>#}
 
-{% if pickupPointId %}
-    <label class="setono-sylius-pickup-point-label"
-           data-pickup-point-id="{{ pickupPointId }}"
-           data-url="{{ path('setono_sylius_pickup_point_shop_ajax_pickup_point_by_id', { 'pickupPointId': pickupPointId }) }}"
-           style="display: none;">
-        {{ 'setono_sylius_pickup_point.ui.shipment_to'|trans }}
-    </label>
+    <div>
+        <strong>{{ shipment.pickupPoint }}</strong>
+        <p>{{ shipment.pickupPoint.name }}&nbsp;: {{ shipment.pickupPoint.address }}, {{ shipment.pickupPoint.zipCode }} {{ shipment.pickupPoint.city }}, {{ shipment.pickupPoint.country }}</p>
+    </div>
 {% endif %}
