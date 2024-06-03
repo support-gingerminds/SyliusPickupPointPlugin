@@ -25,7 +25,7 @@ final class CpPoint
     private float $coordGeoLongitude;
     private string $urlGoogleMaps;
 
-    private string $distance;
+    private int $distance;
 
     // Values to find later
     /*private int $distanceEnMetre;
