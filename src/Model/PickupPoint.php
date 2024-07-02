@@ -32,6 +32,8 @@ class PickupPoint implements PickupPointInterface
 
     protected ?int $distance = null;
 
+    protected ?string $type = null;
+
     protected Collection $shipments;
 
     public function getId(): ?int
@@ -159,5 +161,13 @@ class PickupPoint implements PickupPointInterface
         return $this->distance;
     }
 
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
 
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
+    }
 }

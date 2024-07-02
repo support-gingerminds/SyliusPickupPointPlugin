@@ -62,10 +62,11 @@ final class ColissimoProvider extends Provider
                 "city" => $address->getCity(),
                 "codTiersPourPartenaire" => $this->colissimoAccount,
                 "countryCode" => $address->getCountryCode(),
-                "weight" => sprintf('%05d', $order->getTotalWeight()),
+                "weight" => sprintf('%05d', $order->getTotalWeight() > 0 ? $order->getTotalWeight() : 1),
                 "shippingDate" => $date->format('d/m/Y'),
                 "filterRelay" => 1
             ]);
+
 
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
