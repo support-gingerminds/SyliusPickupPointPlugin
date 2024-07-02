@@ -67,8 +67,6 @@ final class ColissimoProvider extends Provider
                 "filterRelay" => 1
             ]);
 
-            dd($cpPoints);
-
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
         }
@@ -104,7 +102,8 @@ final class ColissimoProvider extends Provider
                 floatval($item->coordGeolocalisationLongitude),
                 'https://www.google.com/maps?&z=16&q=' . $item->coordGeolocalisationLatitude . ',' . $item->coordGeolocalisationLongitude,
                 $openingHours,
-                $item->distanceEnMetre
+                $item->distanceEnMetre,
+                $item->typeDePoint
             );
 
             $pickupPoints[] = $this->transform($cpPoint);
@@ -171,7 +170,8 @@ final class ColissimoProvider extends Provider
             floatval($item->coordGeolocalisationLongitude),
             'https://www.google.com/maps?&z=16&q=' . $item->coordGeolocalisationLatitude . ',' . $item->coordGeolocalisationLongitude,
             $openingHours,
-            $item->distanceEnMetre
+            $item->distanceEnMetre,
+            $item->typeDePoint
         );
 
         return $this->transform($cpPoint);
@@ -200,6 +200,7 @@ final class ColissimoProvider extends Provider
         $pickupPoint->setCountry('FR');
         $pickupPoint->setOpeningHours($cpPoint->getOpeningHours());
         $pickupPoint->setDistance($cpPoint->getDistance());
+        $pickupPoint->setType($cpPoint->getType());
 
         return $pickupPoint;
     }
