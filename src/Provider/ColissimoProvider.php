@@ -67,6 +67,7 @@ final class ColissimoProvider extends Provider
                 "filterRelay" => 1
             ]);
 
+            dd($cpPoints);
 
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
