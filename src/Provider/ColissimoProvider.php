@@ -12,6 +12,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Webmozart\Assert\Assert;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Http\Client\Exception\HttpException;
 
 final class ColissimoProvider extends Provider
 {
@@ -67,9 +68,8 @@ final class ColissimoProvider extends Provider
                     "filterRelay" => 1
                 ]);
             } else {
-                throw new ConnectionException();
+                throw new HttpException();
             }
-
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
         }
@@ -140,7 +140,7 @@ final class ColissimoProvider extends Provider
                     "filterRelay" => 1
                 ]);
             } else {
-                throw new ConnectionException();
+                throw new HttpException();
             }
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
