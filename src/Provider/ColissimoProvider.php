@@ -12,7 +12,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Webmozart\Assert\Assert;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Http\Client\Exception\HttpException;
+use Setono\SyliusPickupPointPlugin\Exception\TimeoutException;
 
 final class ColissimoProvider extends Provider
 {
