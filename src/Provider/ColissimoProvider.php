@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Setono\SyliusPickupPointPlugin\Provider;
 
-use MongoDB\Driver\Exception\ConnectionException;
 use Setono\SyliusPickupPointPlugin\Client\Chronopost\ClientInterface;
 use Setono\SyliusPickupPointPlugin\Model\CpPoint;
-use Setono\SyliusPickupPointPlugin\Model\PickupPoint;
 use Setono\SyliusPickupPointPlugin\Model\PickupPointCode;
 use Setono\SyliusPickupPointPlugin\Model\PickupPointInterface;
 use Sylius\Component\Core\Model\OrderInterface;
