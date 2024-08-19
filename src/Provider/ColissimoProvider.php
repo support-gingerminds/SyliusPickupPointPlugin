@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusPickupPointPlugin\Provider;
 
+use MongoDB\Driver\Exception\ConnectionException;
 use Setono\SyliusPickupPointPlugin\Client\Chronopost\ClientInterface;
 use Setono\SyliusPickupPointPlugin\Model\CpPoint;
 use Setono\SyliusPickupPointPlugin\Model\PickupPoint;
@@ -54,18 +55,22 @@ final class ColissimoProvider extends Provider
                 'encoding' => 'utf-8'
             ]);
 
-            $cpPoints = $client->findRDVPointRetraitAcheminement([
-                "accountNumber" => $this->colissimoAccount,
-                "password" => $this->colissimoPassword,
-                "address" => $address->getStreet(),
-                "zipCode" => $address->getPostcode(),
-                "city" => $address->getCity(),
-                "codTiersPourPartenaire" => $this->colissimoAccount,
-                "countryCode" => $address->getCountryCode(),
-                "weight" => sprintf('%05d', $order->getTotalWeight() > 0 ? $order->getTotalWeight() : 1),
-                "shippingDate" => $date->format('d/m/Y'),
-                "filterRelay" => 1
-            ]);
+            if (property_exists($client, 'findRDVPointRetraitAcheminement')) {
+                $cpPoints = $client->findRDVPointRetraitAcheminement([
+                    "accountNumber" => $this->colissimoAccount,
+                    "password" => $this->colissimoPassword,
+                    "address" => $address->getStreet(),
+                    "zipCode" => $address->getPostcode(),
+                    "city" => $address->getCity(),
+                    "codTiersPourPartenaire" => $this->colissimoAccount,
+                    "countryCode" => $address->getCountryCode(),
+                    "weight" => sprintf('%05d', $order->getTotalWeight() > 0 ? $order->getTotalWeight() : 1),
+                    "shippingDate" => $date->format('d/m/Y'),
+                    "filterRelay" => 1
+                ]);
+            } else {
+                throw new ConnectionException();
+            }
 
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
@@ -127,15 +132,18 @@ final class ColissimoProvider extends Provider
                 'encoding' => 'utf-8'
             ]);
 
-            $cpPointResponse = $client->findPointRetraitAcheminementByID([
-                "accountNumber" => $this->colissimoAccount,
-                "password" => $this->colissimoPassword,
-                "id" => $code->getIdPart(),
-                "weight" => 1,
-                "date" => $date->format('d/m/Y'),
-                "filterRelay" => 1
-            ]);
-
+            if (property_exists($client, 'findPointRetraitAcheminementByID')) {
+                $cpPointResponse = $client->findPointRetraitAcheminementByID([
+                    "accountNumber" => $this->colissimoAccount,
+                    "password" => $this->colissimoPassword,
+                    "id" => $code->getIdPart(),
+                    "weight" => 1,
+                    "date" => $date->format('d/m/Y'),
+                    "filterRelay" => 1
+                ]);
+            } else {
+                throw new ConnectionException();
+            }
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
         }
