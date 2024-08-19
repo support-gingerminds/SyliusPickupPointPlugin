@@ -68,7 +68,7 @@ final class ColissimoProvider extends Provider
                     "filterRelay" => 1
                 ]);
             } else {
-                throw new HttpException();
+                throw new TimeoutException();
             }
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
@@ -140,7 +140,7 @@ final class ColissimoProvider extends Provider
                     "filterRelay" => 1
                 ]);
             } else {
-                throw new HttpException();
+                throw new TimeoutException();
             }
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
