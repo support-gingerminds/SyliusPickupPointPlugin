@@ -54,6 +54,8 @@ final class ColissimoProvider extends Provider
                 'encoding' => 'utf-8'
             ]);
 
+            dd(property_exists($client, 'findRDVPointRetraitAcheminement'));
+
             if (property_exists($client, 'findRDVPointRetraitAcheminement')) {
                 $cpPoints = $client->findRDVPointRetraitAcheminement([
                     "accountNumber" => $this->colissimoAccount,
