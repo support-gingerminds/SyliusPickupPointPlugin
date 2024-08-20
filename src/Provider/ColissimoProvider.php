@@ -54,24 +54,18 @@ final class ColissimoProvider extends Provider
                 'encoding' => 'utf-8'
             ]);
 
-            dd($client);
-
-            if (property_exists($client, 'findRDVPointRetraitAcheminement')) {
-                $cpPoints = $client->findRDVPointRetraitAcheminement([
-                    "accountNumber" => $this->colissimoAccount,
-                    "password" => $this->colissimoPassword,
-                    "address" => $address->getStreet(),
-                    "zipCode" => $address->getPostcode(),
-                    "city" => $address->getCity(),
-                    "codTiersPourPartenaire" => $this->colissimoAccount,
-                    "countryCode" => $address->getCountryCode(),
-                    "weight" => sprintf('%05d', $order->getTotalWeight() > 0 ? $order->getTotalWeight() : 1),
-                    "shippingDate" => $date->format('d/m/Y'),
-                    "filterRelay" => 1
-                ]);
-            } else {
-                throw new TimeoutException();
-            }
+            $cpPoints = $client->findRDVPointRetraitAcheminement([
+                "accountNumber" => $this->colissimoAccount,
+                "password" => $this->colissimoPassword,
+                "address" => $address->getStreet(),
+                "zipCode" => $address->getPostcode(),
+                "city" => $address->getCity(),
+                "codTiersPourPartenaire" => $this->colissimoAccount,
+                "countryCode" => $address->getCountryCode(),
+                "weight" => sprintf('%05d', $order->getTotalWeight() > 0 ? $order->getTotalWeight() : 1),
+                "shippingDate" => $date->format('d/m/Y'),
+                "filterRelay" => 1
+            ]);
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
         }
