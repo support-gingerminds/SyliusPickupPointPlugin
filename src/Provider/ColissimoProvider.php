@@ -126,18 +126,14 @@ final class ColissimoProvider extends Provider
                 'encoding' => 'utf-8'
             ]);
 
-            if (property_exists($client, 'findPointRetraitAcheminementByID')) {
-                $cpPointResponse = $client->findPointRetraitAcheminementByID([
-                    "accountNumber" => $this->colissimoAccount,
-                    "password" => $this->colissimoPassword,
-                    "id" => $code->getIdPart(),
-                    "weight" => 1,
-                    "date" => $date->format('d/m/Y'),
-                    "filterRelay" => 1
-                ]);
-            } else {
-                throw new TimeoutException();
-            }
+            $cpPointResponse = $client->findPointRetraitAcheminementByID([
+                "accountNumber" => $this->colissimoAccount,
+                "password" => $this->colissimoPassword,
+                "id" => $code->getIdPart(),
+                "weight" => 1,
+                "date" => $date->format('d/m/Y'),
+                "filterRelay" => 1
+            ]);
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
         }
