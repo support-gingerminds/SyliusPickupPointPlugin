@@ -1,6 +1,6 @@
 framework:
     messenger:
-        default_bus: setono_sylius_pickup_point.command_bus
+        #default_bus: setono_sylius_pickup_point.command_bus
         buses:
             setono_sylius_pickup_point.command_bus: ~
 
