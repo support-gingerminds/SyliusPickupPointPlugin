@@ -140,6 +140,20 @@ final class ColissimoProvider extends Provider
 
         $item = $cpPointResponse->return->pointRetraitAcheminement;
 
+        if (
+            null == $item->adresse1
+            || null == $item->codePostal
+            || null == $item->localite
+            || null == $item->identifiant
+            || null == $item->nom
+            || null == $item->coordGeolocalisationLatitude
+            || null == $item->coordGeolocalisationLongitude
+            || null == $item->distanceEnMetre
+            || null == $item->typeDePoint
+        ) {
+            return null;
+        }
+
         $openingHours = [
             'lundi' => $item->horairesOuvertureLundi,
             'mardi' => $item->horairesOuvertureMardi,
