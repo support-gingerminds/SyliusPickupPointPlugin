@@ -138,21 +138,31 @@ final class ColissimoProvider extends Provider
             throw new TimeoutException($e);
         }
 
-        $item = $cpPointResponse->return->pointRetraitAcheminement;
+        $return = $cpPointResponse->return;
 
-//        if (
-//            null == $item->adresse1
-//            || null == $item->codePostal
-//            || null == $item->localite
-//            || null == $item->identifiant
-//            || null == $item->nom
-//            || null == $item->coordGeolocalisationLatitude
-//            || null == $item->coordGeolocalisationLongitude
-//            || null == $item->distanceEnMetre
-//            || null == $item->typeDePoint
-//        ) {
-//            return null;
-//        }
+        if (!empty($return->errorMessage)) {
+            return null;
+        }
+
+        if (!isset($return->pointRetraitAcheminement)) {
+            return null;
+        }
+
+        $item = $return->pointRetraitAcheminement;
+
+        if (
+            null == $item->adresse1
+            || null == $item->codePostal
+            || null == $item->localite
+            || null == $item->identifiant
+            || null == $item->nom
+            || null == $item->coordGeolocalisationLatitude
+            || null == $item->coordGeolocalisationLongitude
+            || null == $item->distanceEnMetre
+            || null == $item->typeDePoint
+        ) {
+            return null;
+        }
 
         $openingHours = [
             'lundi' => $item->horairesOuvertureLundi,
