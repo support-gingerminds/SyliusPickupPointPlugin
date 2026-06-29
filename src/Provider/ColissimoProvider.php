@@ -140,10 +140,6 @@ final class ColissimoProvider extends Provider
 
         $return = $cpPointResponse->return;
 
-        if (!empty($return->errorMessage)) {
-            return null;
-        }
-
         if (!isset($return->pointRetraitAcheminement)) {
             return null;
         }
