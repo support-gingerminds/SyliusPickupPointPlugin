@@ -35,6 +35,14 @@ final class CpPoint
 
     private array $openingHours;
 
+    /**
+     * ISO 3166 country code of the pickup point itself (as returned by the
+     * carrier's webservice, e.g. `codePays`). Kept nullable/optional so
+     * providers that don't return this info (e.g. Chronopost) keep working
+     * unchanged; defaults to null and callers should fall back to 'FR'.
+     */
+    private ?string $pays;
+
     public function __construct(
         string $adresse1,
         string $codePostal,
@@ -54,7 +62,8 @@ final class CpPoint
         string $urlGoogleMaps,
         array $openingHours,
         int $distance,
-        string $type
+        string $type,
+        ?string $pays = null
     ) {
         $this->adresse1 = $adresse1;
         $this->codePostal = $codePostal;
@@ -75,6 +84,7 @@ final class CpPoint
         $this->openingHours = $openingHours;
         $this->distance = $distance;
         $this->type = $type;
+        $this->pays = $pays;
     }
 
     public static function createFromStdClass(stdClass $stdClass): self
@@ -170,5 +180,10 @@ final class CpPoint
     public function getType(): string
     {
         return $this->type;
+    }
+
+    public function getPays(): ?string
+    {
+        return $this->pays;
     }
 }

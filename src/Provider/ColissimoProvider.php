@@ -43,6 +43,12 @@ final class ColissimoProvider extends Provider
             $address = $order->getBillingAddress();
         }
 
+        // Colissimo's webservice requires countryCode/optionInter to be consistent:
+        // optionInter = 0 means "France only" (default), 1 means "international only".
+        // See La Poste's "WebService de choix de livraison" technical doc, §II.5.1.
+        $countryCode = strtoupper((string) ($address->getCountryCode() ?: 'FR'));
+        $optionInter = $countryCode !== 'FR' ? 1 : 0;
+
         try {
             $date = new \DateTime();
 
@@ -61,10 +67,11 @@ final class ColissimoProvider extends Provider
                 "zipCode" => $address->getPostcode(),
                 "city" => $address->getCity(),
                 "codTiersPourPartenaire" => $this->colissimoAccount,
-                "countryCode" => $address->getCountryCode(),
+                "countryCode" => $countryCode,
                 "weight" => sprintf('%05d', $order->getTotalWeight() > 0 ? $order->getTotalWeight() : 1),
                 "shippingDate" => $date->format('d/m/Y'),
-                "filterRelay" => 1
+                "filterRelay" => 1,
+                "optionInter" => $optionInter
             ]);
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
@@ -102,7 +109,8 @@ final class ColissimoProvider extends Provider
                 'https://www.google.com/maps?&z=16&q=' . $item->coordGeolocalisationLatitude . ',' . $item->coordGeolocalisationLongitude,
                 $openingHours,
                 $item->distanceEnMetre,
-                $item->typeDePoint
+                $item->typeDePoint,
+                $item->codePays ?? $countryCode
             );
 
             $pickupPoints[] = $this->transform($cpPoint);
@@ -115,6 +123,9 @@ final class ColissimoProvider extends Provider
 
     public function findPickupPoint(PickupPointCode $code): ?PickupPointInterface
     {
+        $countryCode = strtoupper($code->getCountryPart() ?: 'FR');
+        $optionInter = $countryCode !== 'FR' ? 1 : 0;
+
         try {
             $date = new \DateTime();
 
@@ -132,7 +143,8 @@ final class ColissimoProvider extends Provider
                 "id" => $code->getIdPart(),
                 "weight" => 1,
                 "date" => $date->format('d/m/Y'),
-                "filterRelay" => 1
+                "filterRelay" => 1,
+                "optionInter" => $optionInter
             ]);
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
@@ -189,7 +201,8 @@ final class ColissimoProvider extends Provider
             'https://www.google.com/maps?&z=16&q=' . $item->coordGeolocalisationLatitude . ',' . $item->coordGeolocalisationLongitude,
             $openingHours,
             $item->distanceEnMetre,
-            $item->typeDePoint
+            $item->typeDePoint,
+            $item->codePays ?? $countryCode
         );
 
         return $this->transform($cpPoint);
@@ -207,7 +220,12 @@ final class ColissimoProvider extends Provider
 
         Assert::isInstanceOf($pickupPoint, PickupPointInterface::class);
 
-        $pickupPoint->setCode(new PickupPointCode($cpPoint->getIdCpPoint(), $this->getCode(), 'FR'));
+        // Use the country actually returned by Colissimo's webservice (codePays)
+        // instead of hardcoding 'FR', so pickup points located in Belgium,
+        // Switzerland, etc. are labeled correctly.
+        $country = $cpPoint->getPays() ?? 'FR';
+
+        $pickupPoint->setCode(new PickupPointCode($cpPoint->getIdCpPoint(), $this->getCode(), $country));
 
         $pickupPoint->setName($cpPoint->getNomEnseigne());
         $pickupPoint->setAddress($cpPoint->getAdresse1());
@@ -215,7 +233,7 @@ final class ColissimoProvider extends Provider
         $pickupPoint->setCity($cpPoint->getLocalite());
         $pickupPoint->setLatitude($cpPoint->getCoordGeoLatitude());
         $pickupPoint->setLongitude($cpPoint->getCoordGeoLongitude());
-        $pickupPoint->setCountry('FR');
+        $pickupPoint->setCountry($country);
         $pickupPoint->setOpeningHours($cpPoint->getOpeningHours());
         $pickupPoint->setDistance($cpPoint->getDistance());
         $pickupPoint->setType($cpPoint->getType());
