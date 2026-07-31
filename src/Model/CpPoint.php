@@ -43,6 +43,15 @@ final class CpPoint
      */
     private ?string $pays;
 
+    /**
+     * Colissimo's internal network identifier for this point (e.g. "R01"-"R11" for France,
+     * "R12" for Belgium, etc. — see La Poste's "Codes réseaux" annex). Required to reliably
+     * re-fetch a point by id via findPointRetraitAcheminementByID: without it, the webservice
+     * assumes the French R01-R11 range and returns errorCode 124 ("Identifiant point de
+     * retrait incorrect") for points in any other network, even though the id is correct.
+     */
+    private ?string $reseau;
+
     public function __construct(
         string $adresse1,
         string $codePostal,
@@ -63,7 +72,8 @@ final class CpPoint
         array $openingHours,
         int $distance,
         string $type,
-        ?string $pays = null
+        ?string $pays = null,
+        ?string $reseau = null
     ) {
         $this->adresse1 = $adresse1;
         $this->codePostal = $codePostal;
@@ -85,6 +95,7 @@ final class CpPoint
         $this->distance = $distance;
         $this->type = $type;
         $this->pays = $pays;
+        $this->reseau = $reseau;
     }
 
     public static function createFromStdClass(stdClass $stdClass): self
@@ -185,5 +196,10 @@ final class CpPoint
     public function getPays(): ?string
     {
         return $this->pays;
+    }
+
+    public function getReseau(): ?string
+    {
+        return $this->reseau;
     }
 }

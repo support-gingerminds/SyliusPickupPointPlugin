@@ -33,17 +33,28 @@ final class ColissimoApiException extends RuntimeException implements ExceptionI
         return null === $errorCode || in_array($errorCode, self::BENIGN_ERROR_CODES, true);
     }
 
+    /**
+     * Error codes that specifically point to an account/contract configuration problem
+     * (as opposed to e.g. 124 "wrong id", which is a data/lookup problem).
+     */
+    private const ACCOUNT_CONFIG_ERROR_CODES = ['146', '201', '202', '203'];
+
     public static function fromResponse(?string $errorCode, ?string $errorMessage, string $countryCode, int $optionInter): self
     {
+        $hint = in_array($errorCode, self::ACCOUNT_CONFIG_ERROR_CODES, true)
+            ? 'This usually means the Colissimo account is not authorized/activated for international pickup '
+                . 'point search for this country (contact La Poste/Colissimo support to activate the "option '
+                . 'internationale Point Retrait" on the account, and confirm the country is in their eligible list).'
+            : 'See La Poste\'s "WebService de choix de livraison" documentation, §III "Codes erreurs", for what '
+                . 'this specific code means.';
+
         return new self(sprintf(
-            'Colissimo "Point Retrait" webservice returned error code %s (%s) for countryCode=%s, optionInter=%d. '
-            . 'This usually means the Colissimo account is not authorized/activated for international pickup '
-            . 'point search for this country (contact La Poste/Colissimo support to activate the "option '
-            . 'internationale Point Retrait" on the account, and confirm the country is in their eligible list).',
+            'Colissimo "Point Retrait" webservice returned error code %s (%s) for countryCode=%s, optionInter=%d. %s',
             $errorCode ?? 'unknown',
             $errorMessage ?? 'no message',
             $countryCode,
-            $optionInter
+            $optionInter,
+            $hint
         ));
     }
 }

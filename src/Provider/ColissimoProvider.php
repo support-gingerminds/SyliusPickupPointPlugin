@@ -121,7 +121,8 @@ final class ColissimoProvider extends Provider
                 $openingHours,
                 $item->distanceEnMetre,
                 $item->typeDePoint,
-                $item->codePays ?? $countryCode
+                $item->codePays ?? $countryCode,
+                $item->reseau ?? null
             );
 
             $pickupPoints[] = $this->transform($cpPoint);
@@ -135,10 +136,15 @@ final class ColissimoProvider extends Provider
     public function findPickupPoint(PickupPointCode $code): ?PickupPointInterface
     {
         // NB: unlike findRDVPointRetraitAcheminement, La Poste's findPointRetraitAcheminementByID
-        // does not accept an optionInter parameter (it looks up a point by its unique id, which is
-        // not country-scoped) — see "WebService de choix de livraison" doc, §II.7.3. We still keep
-        // the country to fall back on if the response is missing codePays for some reason.
+        // does not accept an optionInter parameter (it looks up a point by its unique id). But it
+        // DOES need a "reseau" (network) parameter for anything outside the French R01-R11 range:
+        // without it, the webservice assumes a French network and returns errorCode 124
+        // ("Identifiant point de retrait incorrect") even for a perfectly valid foreign id.
+        // Since the id round-trips through forms/APIs as an opaque string, we smuggle the
+        // network in it as "<realId>:<reseau>" (see transform()) and split it back out here.
         $countryCode = strtoupper($code->getCountryPart() ?: 'FR');
+
+        [$realId, $reseau] = array_pad(explode(':', $code->getIdPart(), 2), 2, null);
 
         try {
             $date = new \DateTime();
@@ -151,14 +157,20 @@ final class ColissimoProvider extends Provider
                 'encoding' => 'utf-8'
             ]);
 
-            $cpPointResponse = $client->findPointRetraitAcheminementByID([
+            $params = [
                 "accountNumber" => $this->colissimoAccount,
                 "password" => $this->colissimoPassword,
-                "id" => $code->getIdPart(),
+                "id" => $realId,
                 "weight" => 1,
                 "date" => $date->format('d/m/Y'),
                 "filterRelay" => 1
-            ]);
+            ];
+
+            if (null !== $reseau && '' !== $reseau) {
+                $params['reseau'] = $reseau;
+            }
+
+            $cpPointResponse = $client->findPointRetraitAcheminementByID($params);
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
         }
@@ -225,7 +237,8 @@ final class ColissimoProvider extends Provider
             $openingHours,
             $item->distanceEnMetre,
             $item->typeDePoint,
-            $item->codePays ?? $countryCode
+            $item->codePays ?? $countryCode,
+            $item->reseau ?? $reseau
         );
 
         return $this->transform($cpPoint);
@@ -248,7 +261,16 @@ final class ColissimoProvider extends Provider
         // Switzerland, etc. are labeled correctly.
         $country = $cpPoint->getPays() ?? 'FR';
 
-        $pickupPoint->setCode(new PickupPointCode($cpPoint->getIdCpPoint(), $this->getCode(), $country));
+        // Smuggle the network ("reseau") into the id as "<realId>:<reseau>". This id is what
+        // gets round-tripped verbatim through admin forms and the headless front API when a
+        // point is selected; findPickupPoint() below splits it back apart. Without the network,
+        // re-fetching a non-French point by id fails with errorCode 124 (see findPickupPoint()).
+        $reseau = $cpPoint->getReseau();
+        $id = (null !== $reseau && '' !== $reseau)
+            ? $cpPoint->getIdCpPoint() . ':' . $reseau
+            : $cpPoint->getIdCpPoint();
+
+        $pickupPoint->setCode(new PickupPointCode($id, $this->getCode(), $country));
 
         $pickupPoint->setName($cpPoint->getNomEnseigne());
         $pickupPoint->setAddress($cpPoint->getAdresse1());
