@@ -181,7 +181,13 @@ final class ColissimoProvider extends Provider
         if (!ColissimoApiException::isBenign($errorCode)) {
             throw ColissimoApiException::fromResponse(
                 $errorCode,
-                $return->errorMessage ?? null,
+                sprintf(
+                    '%s [debug: rawIdPart=%s realId=%s reseau=%s]',
+                    $return->errorMessage ?? '',
+                    $code->getIdPart(),
+                    $realId ?? 'null',
+                    $reseau ?? 'null'
+                ),
                 $countryCode,
                 0
             );
