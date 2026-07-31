@@ -28,16 +28,38 @@ final class ColissimoApiException extends RuntimeException implements ExceptionI
      */
     private const BENIGN_ERROR_CODES = ['0', '300', '301'];
 
-    public static function isBenign(?string $errorCode): bool
-    {
-        return null === $errorCode || in_array($errorCode, self::BENIGN_ERROR_CODES, true);
-    }
-
     /**
      * Error codes that specifically point to an account/contract configuration problem
      * (as opposed to e.g. 124 "wrong id", which is a data/lookup problem).
      */
     private const ACCOUNT_CONFIG_ERROR_CODES = ['146', '201', '202', '203'];
+
+    /**
+     * "Identifiant point de retrait incorrect": the id could not be resolved. In practice this
+     * usually means the id was passed without Colissimo's "reseau" (network) suffix that this
+     * fork encodes as "<id>:<reseau>" — see ColissimoProvider::findPickupPoint(). Callers can
+     * catch this specific code and fall back to re-resolving the point via findPickupPoints().
+     */
+    public const ERROR_CODE_UNKNOWN_ID = '124';
+
+    private ?string $colissimoErrorCode;
+
+    public function __construct(string $message, ?string $colissimoErrorCode = null)
+    {
+        parent::__construct($message);
+
+        $this->colissimoErrorCode = $colissimoErrorCode;
+    }
+
+    public function getColissimoErrorCode(): ?string
+    {
+        return $this->colissimoErrorCode;
+    }
+
+    public static function isBenign(?string $errorCode): bool
+    {
+        return null === $errorCode || in_array($errorCode, self::BENIGN_ERROR_CODES, true);
+    }
 
     public static function fromResponse(?string $errorCode, ?string $errorMessage, string $countryCode, int $optionInter): self
     {
@@ -55,6 +77,6 @@ final class ColissimoApiException extends RuntimeException implements ExceptionI
             $countryCode,
             $optionInter,
             $hint
-        ));
+        ), $errorCode);
     }
 }
