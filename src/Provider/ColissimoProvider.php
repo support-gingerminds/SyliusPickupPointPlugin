@@ -13,6 +13,7 @@ use Sylius\Component\Resource\Factory\FactoryInterface;
 use Webmozart\Assert\Assert;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Setono\SyliusPickupPointPlugin\Exception\TimeoutException;
+use Setono\SyliusPickupPointPlugin\Exception\ColissimoApiException;
 
 final class ColissimoProvider extends Provider
 {
@@ -77,8 +78,18 @@ final class ColissimoProvider extends Provider
             throw new TimeoutException($e);
         }
 
+        $errorCode = isset($cpPoints->return->errorCode) ? (string) $cpPoints->return->errorCode : null;
+        if (!ColissimoApiException::isBenign($errorCode)) {
+            throw ColissimoApiException::fromResponse(
+                $errorCode,
+                $cpPoints->return->errorMessage ?? null,
+                $countryCode,
+                $optionInter
+            );
+        }
+
         $pickupPoints = [];
-        foreach ($cpPoints->return->listePointRetraitAcheminement as $item) {
+        foreach ($cpPoints->return->listePointRetraitAcheminement ?? [] as $item) {
 
             $openingHours = [
                 'lundi' => $item->horairesOuvertureLundi,
@@ -123,8 +134,11 @@ final class ColissimoProvider extends Provider
 
     public function findPickupPoint(PickupPointCode $code): ?PickupPointInterface
     {
+        // NB: unlike findRDVPointRetraitAcheminement, La Poste's findPointRetraitAcheminementByID
+        // does not accept an optionInter parameter (it looks up a point by its unique id, which is
+        // not country-scoped) — see "WebService de choix de livraison" doc, §II.7.3. We still keep
+        // the country to fall back on if the response is missing codePays for some reason.
         $countryCode = strtoupper($code->getCountryPart() ?: 'FR');
-        $optionInter = $countryCode !== 'FR' ? 1 : 0;
 
         try {
             $date = new \DateTime();
@@ -143,14 +157,23 @@ final class ColissimoProvider extends Provider
                 "id" => $code->getIdPart(),
                 "weight" => 1,
                 "date" => $date->format('d/m/Y'),
-                "filterRelay" => 1,
-                "optionInter" => $optionInter
+                "filterRelay" => 1
             ]);
         } catch (ConnectionException $e) {
             throw new TimeoutException($e);
         }
 
         $return = $cpPointResponse->return;
+
+        $errorCode = isset($return->errorCode) ? (string) $return->errorCode : null;
+        if (!ColissimoApiException::isBenign($errorCode)) {
+            throw ColissimoApiException::fromResponse(
+                $errorCode,
+                $return->errorMessage ?? null,
+                $countryCode,
+                0
+            );
+        }
 
         if (!isset($return->pointRetraitAcheminement)) {
             return null;
